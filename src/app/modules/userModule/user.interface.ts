@@ -23,9 +23,9 @@ interface IUser extends Document {
   gender?: Gender;
   address?: string;
   role: string;
-  status: string,
-  point?: number,
-  isActive?: boolean
+  status: string;
+  point?: number;
+  isActive?: boolean;
 }
 
 export default IUser;

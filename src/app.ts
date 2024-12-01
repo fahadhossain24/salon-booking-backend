@@ -33,9 +33,9 @@ const limiter = rateLimit({
 // app.use(limiter);
 
 // application middleware
-app.use('/v1', routers)
+app.use('/v1', routers);
 
-app.get('/health_check', async(req: Request, res: Response) => {
+app.get('/health_check', async (req: Request, res: Response) => {
   res.status(StatusCodes.OK).json({
     message: 'Welcome to the server. Server health is good.',
   });

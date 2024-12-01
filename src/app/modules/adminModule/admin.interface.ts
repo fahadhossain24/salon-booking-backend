@@ -6,7 +6,7 @@ interface IAdmin extends Document {
   phone: string;
   email: string;
   password: string;
-  status: string,
+  status: string;
   image?: string;
   isEmailVerified: boolean;
   verification?: {
@@ -15,7 +15,7 @@ interface IAdmin extends Document {
   };
   address?: string;
   role: string;
-  isActive?: boolean
+  isActive?: boolean;
 }
 
 export default IAdmin;
