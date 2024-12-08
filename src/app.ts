@@ -1,3 +1,4 @@
+import 'express-async-errors'; 
 import express, { Application, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import cors from 'cors';
@@ -7,9 +8,9 @@ import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload';
 import path from 'path';
 import rateLimit from 'express-rate-limit';
-import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import notFound from './app/middlewares/notFound';
 import routers from './app/routers/version1';
+import globalErrorHandler from './app/middlewares/globalErrorHandler';
 
 const app: Application = express();
 

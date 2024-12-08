@@ -26,6 +26,8 @@ interface IUser extends Document {
   status: string;
   point?: number;
   isActive?: boolean;
+  isSocial?: boolean;
+  fcmToken?: string;
 }
 
 export default IUser;

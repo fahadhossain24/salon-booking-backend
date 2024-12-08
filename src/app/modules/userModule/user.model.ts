@@ -64,10 +64,10 @@ const userSchema = new mongoose.Schema<IUser>(
         default: null,
       },
     },
-    referralCode: {
-      type: String,
-      default: null,
-    },
+    // referralCode: {
+    //   type: String,
+    //   default: null,
+    // },
     point: {
       type: Number,
       default: 0,
@@ -75,12 +75,23 @@ const userSchema = new mongoose.Schema<IUser>(
     dateOfBirth: Date,
     gender: {
       type: String,
-      enum: ['male', 'female', 'other'],
+      enum: {
+        values: ['male', 'female', 'other'],
+        message: '{VALUE} is not accepted as a gender value. Use male/female/other.',
+      },
     },
     address: String,
     isActive: {
       type: Boolean,
       default: true,
+    },
+    isSocial: {
+      type: Boolean,
+      default: false,
+    },
+    fcmToken: {
+      type: String,
+      default: null,
     },
   },
   {
