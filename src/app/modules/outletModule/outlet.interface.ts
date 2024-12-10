@@ -7,7 +7,8 @@ export interface IOutlet extends Document {
   phone: string;
   password: string;
   status: string;
-  image: string;
+  profileImage: string;
+  coverImage: string;
   location: {
     latitude: string;
     longitude: string;
@@ -19,10 +20,16 @@ export interface IOutlet extends Document {
   experience: string;
   about: string;
   role: string;
-  serviceCategory: {
-    name: string;
-    categoryId: mongoose.Schema.Types.ObjectId;
-  };
+  categoryId: mongoose.Schema.Types.ObjectId;
   type: string;
   isRecommended: boolean;
+  verification?: {
+    code: string;
+    expireDate: Date;
+  };
+  isEmailVerified: boolean;
+
+  // methods
+  comparePassword(userPlanePassword: string): boolean;
+  compareVerificationCode(userPlaneCode: string): boolean;
 }

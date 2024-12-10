@@ -10,10 +10,15 @@ import config from '../../../config';
 import referralCodeServices from '../referralCodeModule/refarralCode.services';
 import fileUploader from '../../../utils/fileUploader';
 import { FileArray } from 'express-fileupload';
+import authServices from '../authModule/userAuthModule/auth.services';
 
 // controller for create new user
 const createUser = async (req: Request, res: Response) => {
   const userData = req.body;
+  const userInOutlet = await authServices.getOutletByEmail(userData.email);
+  if (userInOutlet) {
+    throw new CustomError.BadRequestError('Email already used!');
+  }
   const userId = IdGenerator.generateId();
 
   const expireDate = new Date();
@@ -143,8 +148,8 @@ const changeUserProfileImage = async (req: Request, res: Response) => {
   // console.log(files)
   const user = await userServices.getSpecificUser(id);
   // console.log(req.files)
-  if(!user){
-    throw new CustomError.NotFoundError("No user found!")
+  if (!user) {
+    throw new CustomError.NotFoundError('No user found!');
   }
 
   const userImagePath = await fileUploader(files as FileArray, `user-image-${user.userId}`, 'image');
@@ -168,5 +173,5 @@ export default {
   getSpecificUser,
   deleteSpecificUser,
   updateSpecificUser,
-  changeUserProfileImage
+  changeUserProfileImage,
 };

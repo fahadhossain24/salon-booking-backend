@@ -4,7 +4,7 @@ import jwtHelpers from '../../healpers/healper.jwt';
 import config from '../../config';
 import { Secret } from 'jsonwebtoken';
 
-const authentication = (...requiredRoles: string[]) => {
+const authorization = (...requiredRoles: string[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -25,4 +25,4 @@ const authentication = (...requiredRoles: string[]) => {
   };
 };
 
-export default authentication;
+export default authorization;

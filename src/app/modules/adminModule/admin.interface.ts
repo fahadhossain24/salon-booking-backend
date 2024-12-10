@@ -16,6 +16,10 @@ interface IAdmin extends Document {
   address?: string;
   role: string;
   isActive?: boolean;
+
+  // methods
+  comparePassword(adminPlanePassword: string): boolean;
+  compareVerificationCode(adminPlaneCode: string): boolean;
 }
 
 export default IAdmin;
