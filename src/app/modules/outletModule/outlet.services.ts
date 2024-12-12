@@ -12,6 +12,11 @@ const getSpecificOutlet = async (id: string): Promise<IOutlet> => {
   return await Outlet.findOne({ _id: id }).select('-password');
 };
 
+// service for get outlets by service category
+const getOutletsByServiceCategory = async (id: string, skip: number, limit: number) => {
+  return await Outlet.find({ categoryId: id }).populate('categoryId').skip(skip).limit(limit);
+};
+
 // service for update specific outlet
 const updateSpecificOutlet = async (id: string, data: Partial<IOutlet>) => {
   return await Outlet.updateOne({ _id: id }, data, {
@@ -27,6 +32,7 @@ const deleteSpecificOutlet = async (id: string) => {
 export default {
   createOutlet,
   getSpecificOutlet,
+  getOutletsByServiceCategory,
   updateSpecificOutlet,
   deleteSpecificOutlet,
 };

@@ -13,7 +13,10 @@ const outletSchema = new mongoose.Schema<IOutlet>(
     },
     type: {
       type: String,
-      enum: ['salon', 'spa', 'pets'],
+      enum: {
+        values: ['Salon', 'Spa', 'Pets'],
+        message: "{VALUE} is not accepted as outlet type. Use Salon/Spa/Pets as type of outlet."
+      },
     },
     name: {
       type: String,

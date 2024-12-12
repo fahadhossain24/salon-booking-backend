@@ -58,7 +58,7 @@ const getServiceByOutletId = async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     status: 'success',
-    message: 'Service created successfull!',
+    message: 'Services retrive successfull!',
     meta: {
       totalData: totalServices,
       totalPage: totalPages,
