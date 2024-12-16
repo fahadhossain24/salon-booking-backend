@@ -6,6 +6,7 @@ import outletRouter from '../../modules/outletModule/outlet.routes';
 import adminAuthRouter from '../../modules/authModule/adminAuthModule/auth.routes';
 import serviceCategoryRouter from '../../modules/serviceCategoryModule/serviceCategory.routes';
 import serviceRouter from '../../modules/serviceModule/service.routes';
+import sliderRouter from '../../modules/sliderModule/slider.routes';
 
 const routers = express.Router();
 
@@ -16,5 +17,6 @@ routers.use('/auth/admin', adminAuthRouter)
 routers.use('/outlet', outletRouter)
 routers.use('/service-category', serviceCategoryRouter)
 routers.use('/service', serviceRouter)
+routers.use('/slider', sliderRouter)
 
 export default routers;
