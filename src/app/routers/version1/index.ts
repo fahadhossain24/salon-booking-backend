@@ -7,6 +7,9 @@ import adminAuthRouter from '../../modules/authModule/adminAuthModule/auth.route
 import serviceCategoryRouter from '../../modules/serviceCategoryModule/serviceCategory.routes';
 import serviceRouter from '../../modules/serviceModule/service.routes';
 import sliderRouter from '../../modules/sliderModule/slider.routes';
+import aboutUsRouter from '../../modules/aboutUsModule/abountUs.routes';
+import privacyPolicyRouter from '../../modules/privacyPolicyModule/privacyPolicy.routes';
+import termsConditionRouter from '../../modules/termsConditionModule/termsCondition.routes';
 
 const routers = express.Router();
 
@@ -18,5 +21,8 @@ routers.use('/outlet', outletRouter)
 routers.use('/service-category', serviceCategoryRouter)
 routers.use('/service', serviceRouter)
 routers.use('/slider', sliderRouter)
+routers.use('/about-us', aboutUsRouter)
+routers.use('/privacy-policy', privacyPolicyRouter)
+routers.use('/terms-condition', termsConditionRouter)
 
 export default routers;
