@@ -122,5 +122,25 @@ outletSchema.methods.compareVerificationCode = function (userPlaneCode: string) 
   return bcrypt.compareSync(userPlaneCode, this.verification.code);
 };
 
+outletSchema.index(
+  {
+    name: 'text',
+    email: 'text',
+    phone: 'text',
+    nidNumber: 'text',
+    bankAccountNumber: 'text'
+  },
+  {
+    weights: {
+      name: 5,
+      email: 4,
+      phone: 4,
+      nidNumber: 3,
+      bankAccountNumber: 2
+    }
+  }
+)
+
+
 const Outlet = mongoose.model<IOutlet>('outlet', outletSchema);
 export default Outlet;

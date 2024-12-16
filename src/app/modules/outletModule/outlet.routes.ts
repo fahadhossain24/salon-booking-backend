@@ -6,7 +6,7 @@ const outletRouter = express.Router();
 
 outletRouter.post('/create', authorization('super-admin', 'admin'), outletControllers.createOutlet);
 outletRouter.get(
-  '/retrive/category/:serviceCategoryId',
+  '/retrive/category/:serviceCategoryId/search',
   authorization('outlet', 'super-admin', 'admin'),
   outletControllers.getOutletsByServiceCategory,
 );

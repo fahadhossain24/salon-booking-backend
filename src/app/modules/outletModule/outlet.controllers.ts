@@ -53,6 +53,7 @@ const createOutlet = async (req: Request, res: Response) => {
 // controller for get all outlets by main service category
 const getOutletsByServiceCategory = async (req: Request, res: Response) => {
   const { serviceCategoryId } = req.params;
+  const {query} = req.query
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 8;
 
@@ -61,7 +62,7 @@ const getOutletsByServiceCategory = async (req: Request, res: Response) => {
   }
 
   const skip = (page - 1) * limit;
-  const outlets = await outletServices.getOutletsByServiceCategory(serviceCategoryId, skip, limit);
+  const outlets = await outletServices.getOutletsByServiceCategory(serviceCategoryId, query as string, skip, limit);
 
   const totalOutlets = outlets.length || 0;
   const totalPages = Math.ceil(totalOutlets / limit);
@@ -161,6 +162,16 @@ const changeOutletCoverImage = async (req: Request, res: Response) => {
     message: `Cover image change successfull`,
   });
 };
+
+// // controller for search outlet inside service category
+// const searchOutletInsideServiceCategory = async(req: Request, res: Response) => {
+//   const {id} = req.params;
+//   const {query} = req.query
+//   const page = parseInt(req.query.page as string) || 1
+//   const limit = parseInt(req.query.limit as string) || 8
+
+//   const skip = (page - 1) * limit
+// }
 
 export default {
   createOutlet,

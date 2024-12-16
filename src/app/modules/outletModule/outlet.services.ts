@@ -13,8 +13,18 @@ const getSpecificOutlet = async (id: string): Promise<IOutlet> => {
 };
 
 // service for get outlets by service category
-const getOutletsByServiceCategory = async (id: string, skip: number, limit: number) => {
-  return await Outlet.find({ categoryId: id }).populate('categoryId').skip(skip).limit(limit);
+// const getOutletsByServiceCategory = async (id: string, query: string, skip: number, limit: number) => {
+//   return await Outlet.find({ categoryId: id }).populate('categoryId').skip(skip).limit(limit);
+// };
+const getOutletsByServiceCategory = async (id: string, query: string, skip: number, limit: number) => {
+  let filter: any = { categoryId: id };
+
+  // If a search query is provided, perform a text search or regex search
+  if (query) {
+    filter.$text = { $search: query}; // Assuming the `Outlet` model has a text index on relevant fields
+  }
+
+  return await Outlet.find(filter).populate('categoryId').skip(skip).limit(limit);
 };
 
 // service for update specific outlet
@@ -28,6 +38,20 @@ const updateSpecificOutlet = async (id: string, data: Partial<IOutlet>) => {
 const deleteSpecificOutlet = async (id: string) => {
   return await Outlet.deleteOne({ _id: id });
 };
+
+// service to get all question
+// const getAllQuestion = async (query, skip, limit) => {
+//   let filter = {};
+
+//   // If a search query is provided, perform a text search
+//   if (query) {
+//     filter = { $text: { $search: query } };
+//   }
+
+//   return await Question.find(filter)
+//     .skip(skip)
+//     .limit(limit);
+// };
 
 export default {
   createOutlet,
