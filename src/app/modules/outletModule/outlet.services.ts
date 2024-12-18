@@ -27,6 +27,18 @@ const getOutletsByServiceCategory = async (id: string, query: string, skip: numb
   return await Outlet.find(filter).populate('categoryId').skip(skip).limit(limit);
 };
 
+// service for get recommended outlets by service category
+const getRecommendedOutletsByServiceCategory = async (id: string, query: string, skip: number, limit: number) => {
+  let filter: any = { categoryId: id, isRecommended: true };
+
+  // If a search query is provided, perform a text search or regex search
+  if (query) {
+    filter.$text = { $search: query}; // Assuming the `Outlet` model has a text index on relevant fields
+  }
+
+  return await Outlet.find(filter).populate('categoryId').skip(skip).limit(limit);
+};
+
 // service for update specific outlet
 const updateSpecificOutlet = async (id: string, data: Partial<IOutlet>) => {
   return await Outlet.updateOne({ _id: id }, data, {
@@ -57,6 +69,7 @@ export default {
   createOutlet,
   getSpecificOutlet,
   getOutletsByServiceCategory,
+  getRecommendedOutletsByServiceCategory,
   updateSpecificOutlet,
   deleteSpecificOutlet,
 };

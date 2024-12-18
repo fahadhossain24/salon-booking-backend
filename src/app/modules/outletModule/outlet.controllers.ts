@@ -70,7 +70,38 @@ const getOutletsByServiceCategory = async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     status: 'success',
-    message: 'Service created successfull!',
+    message: 'Outlets retrive successfull!',
+    meta: {
+      totalData: totalOutlets,
+      totalPage: totalPages,
+      currentPage: page,
+      limit: limit,
+    },
+    data: outlets,
+  });
+};
+
+// controller for get all recommended outlets by main service category
+const getRecommendedOutletsByServiceCategory = async (req: Request, res: Response) => {
+  const { serviceCategoryId } = req.params;
+  const {query} = req.query
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 8;
+
+  if (!serviceCategoryId) {
+    throw new CustomError.BadRequestError('Missing service category Id in request params!');
+  }
+
+  const skip = (page - 1) * limit;
+  const outlets = await outletServices.getRecommendedOutletsByServiceCategory(serviceCategoryId, query as string, skip, limit);
+
+  const totalOutlets = outlets.length || 0;
+  const totalPages = Math.ceil(totalOutlets / limit);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    status: 'success',
+    message: 'Recommended outlets retrive successfull!',
     meta: {
       totalData: totalOutlets,
       totalPage: totalPages,
@@ -173,9 +204,12 @@ const changeOutletCoverImage = async (req: Request, res: Response) => {
 //   const skip = (page - 1) * limit
 // }
 
+
+
 export default {
   createOutlet,
   getOutletsByServiceCategory,
+  getRecommendedOutletsByServiceCategory,
   updateSpecificOutlet,
   changeOutletProfileImage,
   changeOutletCoverImage,
