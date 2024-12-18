@@ -3,8 +3,9 @@ import { Document, Types } from "mongoose";
 export interface ISchedule extends Document{
     daySlot: {
         dayName: string,
-        openTime: Date,
-        closeTime: Date,
+        openTime: string,
+        closeTime: string,
+        isClosed: boolean,
         _id: Types.ObjectId
     }[],
     outlet: {

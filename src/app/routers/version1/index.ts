@@ -10,6 +10,7 @@ import sliderRouter from '../../modules/sliderModule/slider.routes';
 import aboutUsRouter from '../../modules/aboutUsModule/abountUs.routes';
 import privacyPolicyRouter from '../../modules/privacyPolicyModule/privacyPolicy.routes';
 import termsConditionRouter from '../../modules/termsConditionModule/termsCondition.routes';
+import scheduleRouter from '../../modules/scheduleModule/schedule.routes';
 
 const routers = express.Router();
 
@@ -24,5 +25,6 @@ routers.use('/slider', sliderRouter)
 routers.use('/about-us', aboutUsRouter)
 routers.use('/privacy-policy', privacyPolicyRouter)
 routers.use('/terms-condition', termsConditionRouter)
+routers.use('/schedule', scheduleRouter)
 
 export default routers;
