@@ -18,11 +18,7 @@ export interface IBooking extends Document {
       amount: number;
       currency: string;
     };
-    dayAt: {
-      daySlotId: Types.ObjectId;
-      name: string;
-    };
-    timeAt: string;
+  }
     date: Date;
     paymentType: string;
     paymentStatus: string;
@@ -32,5 +28,4 @@ export interface IBooking extends Document {
       number: string;
       transactionId: string;
     };
-  };
 }

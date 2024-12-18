@@ -11,6 +11,7 @@ import aboutUsRouter from '../../modules/aboutUsModule/abountUs.routes';
 import privacyPolicyRouter from '../../modules/privacyPolicyModule/privacyPolicy.routes';
 import termsConditionRouter from '../../modules/termsConditionModule/termsCondition.routes';
 import scheduleRouter from '../../modules/scheduleModule/schedule.routes';
+import bookingRouter from '../../modules/bookingModule/booking.routes';
 
 const routers = express.Router();
 
@@ -26,5 +27,6 @@ routers.use('/about-us', aboutUsRouter)
 routers.use('/privacy-policy', privacyPolicyRouter)
 routers.use('/terms-condition', termsConditionRouter)
 routers.use('/schedule', scheduleRouter)
+routers.use('/booking', bookingRouter)
 
 export default routers;
