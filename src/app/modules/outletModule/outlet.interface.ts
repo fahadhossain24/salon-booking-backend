@@ -28,6 +28,10 @@ export interface IOutlet extends Document {
     expireDate: Date;
   };
   isEmailVerified: boolean;
+  scheduleStamp?: {
+    days: string;
+    times: string;
+  };
 
   // methods
   comparePassword(userPlanePassword: string): boolean;

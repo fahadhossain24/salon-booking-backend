@@ -24,4 +24,6 @@ bookingRouter.get(
   bookingControllers.getBookingsByServiceId,
 );
 
+bookingRouter.get('/upcomming/retrive/user/:userId', authorization('user', 'outlet', 'super-admin', 'admin'), bookingControllers.retriveUpcommingBookingsByUserId);
+
 export default bookingRouter;

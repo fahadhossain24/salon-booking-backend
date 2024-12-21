@@ -9,6 +9,8 @@ import outletServices from './outlet.services';
 import { Request, Response } from 'express';
 import fileUploader from '../../../utils/fileUploader';
 import { FileArray } from 'express-fileupload';
+import Schedule from '../scheduleModule/schedule.model';
+import Feedback from '../feedbackModule/feedback.model';
 
 // controller for create new outlet
 const createOutlet = async (req: Request, res: Response) => {
@@ -53,7 +55,7 @@ const createOutlet = async (req: Request, res: Response) => {
 // controller for get all outlets by main service category
 const getOutletsByServiceCategory = async (req: Request, res: Response) => {
   const { serviceCategoryId } = req.params;
-  const {query} = req.query
+  const { query } = req.query;
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 8;
 
@@ -64,7 +66,28 @@ const getOutletsByServiceCategory = async (req: Request, res: Response) => {
   const skip = (page - 1) * limit;
   const outlets = await outletServices.getOutletsByServiceCategory(serviceCategoryId, query as string, skip, limit);
 
-  const totalOutlets = outlets.length || 0;
+  const enrichedOutlets = await Promise.all(
+    outlets.map(async (outlet) => {
+      const schedule = await Schedule.findOne({ outlet: outlet._id });
+      const feedbacksOfOutlet = await Feedback.find({ 'outlet.outletId': outlet._id });
+      let topRating = 0;
+      feedbacksOfOutlet.forEach((feedback) => {
+        if (feedback.rating > topRating) {
+          topRating = feedback.rating;
+        }
+        return topRating;
+      });
+      let enrichedOutlet = { ...outlet.toObject(), rating: topRating || 0 }; // Convert to plain object
+      if (schedule) {
+        const days = `${schedule.daySlot[0].dayName} - ${schedule.daySlot[schedule.daySlot.length - 1].dayName}`;
+        const times = `${schedule.timeSlot[0]} - ${schedule.timeSlot[schedule.timeSlot.length - 1]}`;
+        enrichedOutlet.scheduleStamp = { days, times }; // Add scheduleStamp
+      }
+      return enrichedOutlet; // Return the enriched outlet
+    }),
+  );
+
+  const totalOutlets = enrichedOutlets.length || 0;
   const totalPages = Math.ceil(totalOutlets / limit);
 
   sendResponse(res, {
@@ -77,38 +100,63 @@ const getOutletsByServiceCategory = async (req: Request, res: Response) => {
       currentPage: page,
       limit: limit,
     },
-    data: outlets,
+    data: enrichedOutlets,
   });
 };
 
 // controller for get all recommended outlets by main service category
 const getRecommendedOutletsByServiceCategory = async (req: Request, res: Response) => {
   const { serviceCategoryId } = req.params;
-  const {query} = req.query
+  const { query } = req.query;
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 8;
 
   if (!serviceCategoryId) {
-    throw new CustomError.BadRequestError('Missing service category Id in request params!');
+    throw new CustomError.BadRequestError('Missing service category ID in request params!');
   }
 
   const skip = (page - 1) * limit;
+
+  // Retrieve outlets
   const outlets = await outletServices.getRecommendedOutletsByServiceCategory(serviceCategoryId, query as string, skip, limit);
 
-  const totalOutlets = outlets.length || 0;
+  // Enrich outlets with scheduleStamp
+  const enrichedOutlets = await Promise.all(
+    outlets.map(async (outlet) => {
+      const schedule = await Schedule.findOne({ outlet: outlet._id });
+      const feedbacksOfOutlet = await Feedback.find({ 'outlet.outletId': outlet._id });
+      let topRating = 0;
+      feedbacksOfOutlet.forEach((feedback) => {
+        if (feedback.rating > topRating) {
+          topRating = feedback.rating;
+        }
+        return topRating;
+      });
+      let enrichedOutlet = { ...outlet.toObject(), rating: topRating || 0  }; // Convert to plain object
+      if (schedule) {
+        const days = `${schedule.daySlot[0].dayName} - ${schedule.daySlot[schedule.daySlot.length - 1].dayName}`;
+        const times = `${schedule.timeSlot[0]} - ${schedule.timeSlot[schedule.timeSlot.length - 1]}`;
+        enrichedOutlet.scheduleStamp = { days, times }; // Add scheduleStamp
+      }
+      return enrichedOutlet; // Return the enriched outlet
+    }),
+  );
+  // Total outlets and pagination calculations
+  const totalOutlets = enrichedOutlets.length || 0;
   const totalPages = Math.ceil(totalOutlets / limit);
 
+  // Send response
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     status: 'success',
-    message: 'Recommended outlets retrive successfull!',
+    message: 'Recommended outlets retrieved successfully!',
     meta: {
       totalData: totalOutlets,
       totalPage: totalPages,
       currentPage: page,
       limit: limit,
     },
-    data: outlets,
+    data: enrichedOutlets,
   });
 };
 
@@ -194,6 +242,22 @@ const changeOutletCoverImage = async (req: Request, res: Response) => {
   });
 };
 
+// controller for get outlet by outletId
+const getOutletByOutletId = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const outlet = await outletServices.getSpecificOutlet(id);
+  if (!outlet) {
+    throw new CustomError.BadRequestError('No outlet found!');
+  }
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    status: 'success',
+    message: `Outlet retrive successfull`,
+    data: outlet,
+  });
+};
+
 // // controller for search outlet inside service category
 // const searchOutletInsideServiceCategory = async(req: Request, res: Response) => {
 //   const {id} = req.params;
@@ -204,8 +268,6 @@ const changeOutletCoverImage = async (req: Request, res: Response) => {
 //   const skip = (page - 1) * limit
 // }
 
-
-
 export default {
   createOutlet,
   getOutletsByServiceCategory,
@@ -213,4 +275,5 @@ export default {
   updateSpecificOutlet,
   changeOutletProfileImage,
   changeOutletCoverImage,
+  getOutletByOutletId,
 };

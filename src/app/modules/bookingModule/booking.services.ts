@@ -22,10 +22,16 @@ const getBookingsByServiceId = async(serviceId: string, skip: number, limit: num
     return await Booking.find({'service.serviceId': serviceId}).sort('-createdAt').skip(skip).limit(limit);
 }
 
+// service for retrive all upcomming bookings by userId
+const getUpcommingBookingsByUserId = async(userId: string) => {
+    return await Booking.find({'user.userId': userId, bookingStatus: 'upcomming'}).select('outlet service date')
+}
+
 
 export default {
     createBooking,
     getBookingsByServiceId,
     getBookingsByUserId,
-    getbookingsByOutletId
+    getbookingsByOutletId,
+    getUpcommingBookingsByUserId
 }

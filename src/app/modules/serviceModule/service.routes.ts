@@ -7,5 +7,6 @@ serviceRouter.post('/create', serviceControllers.createService)
 serviceRouter.get('/retrive/outlet/:outletId', serviceControllers.getServiceByOutletId)
 serviceRouter.patch('/update/:id', serviceControllers.updateServiceByServiceId)
 serviceRouter.delete('/delete/:id', serviceControllers.deleteServiceByServiceId)
+serviceRouter.get('/offered/retrive', serviceControllers.getDiscountedServices)
 
 export default serviceRouter;

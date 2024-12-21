@@ -15,17 +15,17 @@ const createService = async (req: Request, res: Response) => {
   serviceData.outlet = {
     outletId: serviceData.outletId,
     name: serviceData.outletName,
-    type: serviceData.outletType
-  }
+    type: serviceData.outletType,
+  };
   serviceData.price = {
     amount: serviceData.priceAmount,
     currency: serviceData.priceCurrency,
-  }
+  };
   serviceData.discount = {
     amount: serviceData.discountAmount,
     currency: serviceData.discountCurrency,
-    type: serviceData.discountType
-  }
+    type: serviceData.discountType,
+  };
 
   const serviceImagePath = await fileUploader(files as FileArray, `service-image`, 'image');
   serviceData.image = serviceImagePath;
@@ -108,9 +108,22 @@ const deleteServiceByServiceId = async (req: Request, res: Response) => {
   });
 };
 
+// controller for retrive discounted services
+const getDiscountedServices = async (req: Request, res: Response) => {
+  const services = await serviceServices.getDiscountedServices();
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    status: 'success',
+    message: 'Services retrive successfull!',
+    data: services,
+  });
+};
+
 export default {
   createService,
   getServiceByOutletId,
   updateServiceByServiceId,
   deleteServiceByServiceId,
+  getDiscountedServices,
 };

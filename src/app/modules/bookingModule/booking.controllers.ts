@@ -113,9 +113,27 @@ const getBookingsByServiceId = async (req: Request, res: Response) => {
   });
 };
 
+// controller for retrive upcomming bookings by userId
+const retriveUpcommingBookingsByUserId = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  if (!userId) {
+    throw new CustomError.BadRequestError('Missing userId in request params!');
+  }
+
+  const bookings = await bookingServices.getUpcommingBookingsByUserId(userId);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    status: 'success',
+    message: 'Upcomming bookings retrive successfull!',
+    data: bookings,
+  });
+};
+
 export default {
   createBooking,
   getBookingsByUserId,
   getBookingsByOutletId,
   getBookingsByServiceId,
+  retriveUpcommingBookingsByUserId,
 };
