@@ -27,11 +27,20 @@ const getUpcommingBookingsByUserId = async(userId: string) => {
     return await Booking.find({'user.userId': userId, bookingStatus: 'upcomming'}).select('outlet service date')
 }
 
+// service for retrive all upcomming bookings by outletId
+const getUpcommingBookingsByOutletId = async(outletId: string) => {
+    return await Booking.find({'outlet.outletId': outletId, bookingStatus: 'upcomming'}).populate({
+        path: "user.userId",
+        select: "email phone"
+    }).select('-outlet')
+}
+
 
 export default {
     createBooking,
     getBookingsByServiceId,
     getBookingsByUserId,
     getbookingsByOutletId,
-    getUpcommingBookingsByUserId
+    getUpcommingBookingsByUserId,
+    getUpcommingBookingsByOutletId
 }

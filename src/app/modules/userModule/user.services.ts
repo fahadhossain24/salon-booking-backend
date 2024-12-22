@@ -12,6 +12,11 @@ const getSpecificUser = async (id: string): Promise<IUser> => {
   return await User.findOne({ _id: id }).select('-password');
 };
 
+// service for get specific user
+const getSpecificUserByEmail = async (email: string): Promise<IUser> => {
+  return await User.findOne({ email }).select('-password');
+};
+
 // service for update specific user
 const updateSpecificUser = async (id: string, data: Partial<IUser>) => {
   return await User.updateOne({ _id: id }, data, {
@@ -27,6 +32,7 @@ const deleteSpecificUser = async (id: string) => {
 export default {
   createUser,
   getSpecificUser,
+  getSpecificUserByEmail,
   updateSpecificUser,
   deleteSpecificUser
 };
