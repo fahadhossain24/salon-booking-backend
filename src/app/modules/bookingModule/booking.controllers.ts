@@ -185,11 +185,12 @@ const retriveUpcommingBookingsByUserId = async (req: Request, res: Response) => 
 // controller for retrive upcomming bookings by outletId
 const retriveUpcommingBookingsByOutletId = async (req: Request, res: Response) => {
   const { outletId } = req.params;
+  const {date} = req.query
   if (!outletId) {
     throw new CustomError.BadRequestError('Missing userId in request params!');
   }
 
-  const bookings = await bookingServices.getUpcommingBookingsByOutletId(outletId);
+  const bookings = await bookingServices.getUpcommingBookingsByOutletId(outletId, date as string);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,

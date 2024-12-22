@@ -62,6 +62,7 @@ const bookingSchema = new mongoose.Schema<IBooking>(
       enum: ['upcomming', 'past', 'completed', 'canceled'],
       default: 'upcomming',
     },
+    homeService: Boolean
   },
   {
     timestamps: true,

@@ -29,4 +29,5 @@ export interface IBooking extends Document {
       number: string;
       transactionId: string;
     };
+    homeService: boolean
 }
