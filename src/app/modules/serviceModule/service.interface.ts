@@ -19,4 +19,5 @@ export interface IService extends Document {
   };
   image: string;
   consumeCount: number;
+  isHomeServiceAvailable: boolean;
 }

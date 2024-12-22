@@ -20,6 +20,7 @@ export interface IBooking extends Document {
     };
   }
     date: Date;
+    time: string;
     paymentType: string;
     paymentStatus: string;
     bookingStatus: string;

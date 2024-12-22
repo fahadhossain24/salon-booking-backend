@@ -35,6 +35,16 @@ const getUpcommingBookingsByOutletId = async(outletId: string) => {
     }).select('-outlet')
 }
 
+// service for get booking by DateAndTime
+const getBookingsByDateAndTime = async (date: string, time: string, outletId: string) => {
+    return await Booking.find({
+      date,
+      time,
+      'outlet.outletId': outletId,
+    });
+  };
+  
+
 
 export default {
     createBooking,
@@ -42,5 +52,6 @@ export default {
     getBookingsByUserId,
     getbookingsByOutletId,
     getUpcommingBookingsByUserId,
-    getUpcommingBookingsByOutletId
+    getUpcommingBookingsByOutletId,
+    getBookingsByDateAndTime
 }

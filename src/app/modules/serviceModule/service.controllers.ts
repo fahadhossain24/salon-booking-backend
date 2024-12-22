@@ -12,6 +12,7 @@ import config from '../../../config';
 const createService = async (req: Request, res: Response) => {
   const serviceData = req.body;
   const files = req.files;
+  serviceData.isHomeServiceAvailable = serviceData.isHomeServiceAvailable === 'true';
 
   serviceData.outlet = {
     outletId: serviceData.outletId,

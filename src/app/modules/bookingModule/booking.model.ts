@@ -31,6 +31,7 @@ const bookingSchema = new mongoose.Schema<IBooking>(
       },
     },
     date: Date,
+    time: String,
     paymentType: {
       type: String,
       enum: {

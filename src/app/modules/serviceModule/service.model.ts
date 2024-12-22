@@ -48,6 +48,10 @@ const serviceSchema = new mongoose.Schema<IService>(
       type: Number,
       default: 0
     },
+    isHomeServiceAvailable: {
+      type: Boolean,
+      default: false
+    }
   },
   {
     timestamps: true,
