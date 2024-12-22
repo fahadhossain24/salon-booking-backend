@@ -13,6 +13,7 @@ import termsConditionRouter from '../../modules/termsConditionModule/termsCondit
 import scheduleRouter from '../../modules/scheduleModule/schedule.routes';
 import bookingRouter from '../../modules/bookingModule/booking.routes';
 import feedbackRouter from '../../modules/feedbackModule/feedback.routes';
+import wishlistRouter from '../../modules/wishlistModule/wishlist.routes';
 
 const routers = express.Router();
 
@@ -30,5 +31,6 @@ routers.use('/terms-condition', termsConditionRouter)
 routers.use('/schedule', scheduleRouter)
 routers.use('/booking', bookingRouter)
 routers.use('/feedback', feedbackRouter)
+routers.use('/wishlist', wishlistRouter)
 
 export default routers;

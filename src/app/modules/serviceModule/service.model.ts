@@ -44,7 +44,10 @@ const serviceSchema = new mongoose.Schema<IService>(
       },
     },
     image: String,
-    consumeCount: Number,
+    consumeCount: {
+      type: Number,
+      default: 0
+    },
   },
   {
     timestamps: true,

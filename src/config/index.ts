@@ -22,5 +22,8 @@ export default {
   gmail_app_password: process.env.GMAIL_APP_PASSWORD,
 
   // referral point
-  referral_point: process.env.REFERRAL_POINT
+  referral_point: process.env.REFERRAL_POINT,
+
+  // popular service document count
+  popular_service_document_count: process.env.POPULAR_SERVICE_DOCUMENT_COUNT
 };

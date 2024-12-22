@@ -6,6 +6,7 @@ import CustomError from '../../errors';
 import sendResponse from '../../../shared/sendResponse';
 import { StatusCodes } from 'http-status-codes';
 import { number } from 'zod';
+import config from '../../../config';
 
 // controller for create service
 const createService = async (req: Request, res: Response) => {
@@ -120,10 +121,23 @@ const getDiscountedServices = async (req: Request, res: Response) => {
   });
 };
 
+// controller for retrive popular service
+const getPopularServices = async (req: Request, res: Response) => {
+  const services = await serviceServices.getPopularServices(Number(config.popular_service_document_count));
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    status: 'success',
+    message: 'Popular services retrive successfull!',
+    data: services,
+  });
+};
+
 export default {
   createService,
   getServiceByOutletId,
   updateServiceByServiceId,
   deleteServiceByServiceId,
   getDiscountedServices,
+  getPopularServices,
 };

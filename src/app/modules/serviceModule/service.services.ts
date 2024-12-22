@@ -28,10 +28,16 @@ const getDiscountedServices = async () => {
   return await Service.find({ isDiscount: true });
 };
 
+// service for retrive popular service
+const getPopularServices = async (documentCount: number = 0) => {
+  return await Service.find().sort('-consumeCount').limit(documentCount);
+};
+
 export default {
   createService,
   getServicesByOutlet,
   updateSpecificService,
   deleteSpecificService,
   getDiscountedServices,
+  getPopularServices,
 };

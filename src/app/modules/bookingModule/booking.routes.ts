@@ -25,5 +25,5 @@ bookingRouter.get(
 );
 
 bookingRouter.get('/upcomming/retrive/user/:userId', authorization('user', 'outlet', 'super-admin', 'admin'), bookingControllers.retriveUpcommingBookingsByUserId);
-
+bookingRouter.patch('/reschedule/:id', authorization('user', 'outlet', 'super-admin', 'admin'), bookingControllers.bookingRescheduleById)
 export default bookingRouter;

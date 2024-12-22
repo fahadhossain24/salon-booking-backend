@@ -3,16 +3,47 @@ import bookingServices from './booking.services';
 import CustomError from '../../errors';
 import sendResponse from '../../../shared/sendResponse';
 import { StatusCodes } from 'http-status-codes';
+import Booking from './booking.model';
+import outletServices from '../outletModule/outlet.services';
+import scheduleServices from '../scheduleModule/schedule.services';
+import { parseTime } from '../../../utils/parseTime';
 
 // controller for create new booking
 const createBooking = async (req: Request, res: Response) => {
+  const selectedDate = new Date(req.body.date);
+  const currentDate = new Date();
+
+  const schedule = await scheduleServices.getScheduleByOutletId(req.body.outlet.outletId as unknown as string);
+  if (schedule) {
+    const dayIndex = selectedDate.getDay();
+
+    // Find the schedule entry for the selected day
+    const daySchedule = schedule?.daySlot.find((s) => s.dayIndex === dayIndex);
+
+    if (!daySchedule || daySchedule.isClosed) {
+      throw new CustomError.BadRequestError('The selected day is outside the outlet’s operating schedule.');
+    }
+
+    // Check if the time is within open and close hours
+    const selectedTime = selectedDate.toTimeString().split(' ')[0]; // Extract time as HH:MM:SS
+    const [selectedHour, selectedMinute] = selectedTime.split(':').map(Number);
+
+    const [openHour, openMinute] = parseTime(daySchedule.openTime);
+    const [closeHour, closeMinute] = parseTime(daySchedule.closeTime);
+
+    const isWithinSchedule =
+      (selectedHour > openHour || (selectedHour === openHour && selectedMinute >= openMinute)) &&
+      (selectedHour < closeHour || (selectedHour === closeHour && selectedMinute <= closeMinute));
+
+    if (!isWithinSchedule) {
+      throw new CustomError.BadRequestError('The selected time is outside the outlet’s operating hours.');
+    }
+  }
+
   const booking = await bookingServices.createBooking(req.body);
   if (!booking) {
     throw new CustomError.BadRequestError('Failed to craete booking!');
   }
-
-  const selectedDate = new Date(req.body.date);
-  const currentDate = new Date();
 
   if (selectedDate < currentDate) {
     throw new CustomError.BadRequestError('Booking date cannot be in the past. Please select a valid future date.');
@@ -130,10 +161,64 @@ const retriveUpcommingBookingsByUserId = async (req: Request, res: Response) => 
   });
 };
 
+// controller for reschedule booking
+const bookingRescheduleById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const newDate = req.body.date;
+  const booking = await Booking.findOne({ _id: id });
+  if (!booking) {
+    throw new CustomError.BadRequestError('Failed to retrive booking!');
+  }
+
+  const selectedDate = new Date(newDate);
+  const currentDate = new Date();
+
+  if (selectedDate < currentDate) {
+    throw new CustomError.BadRequestError('Booking date cannot be in the past. Please select a valid future date!');
+  }
+
+  const schedule = await scheduleServices.getScheduleByOutletId(booking.outlet.outletId as unknown as string);
+
+  const dayIndex = selectedDate.getDay();
+
+  // Find the schedule entry for the selected day
+  const daySchedule = schedule?.daySlot.find((s) => s.dayIndex === dayIndex);
+
+  if (!daySchedule || daySchedule.isClosed) {
+    throw new CustomError.BadRequestError('The selected day is outside the outlet’s operating schedule.');
+  }
+
+  // Check if the time is within open and close hours
+  const selectedTime = selectedDate.toTimeString().split(' ')[0]; // Extract time as HH:MM:SS
+  const [selectedHour, selectedMinute] = selectedTime.split(':').map(Number);
+
+  const [openHour, openMinute] = parseTime(daySchedule.openTime);
+  const [closeHour, closeMinute] = parseTime(daySchedule.closeTime);
+
+  const isWithinSchedule =
+    (selectedHour > openHour || (selectedHour === openHour && selectedMinute >= openMinute)) &&
+    (selectedHour < closeHour || (selectedHour === closeHour && selectedMinute <= closeMinute));
+
+  if (!isWithinSchedule) {
+    throw new CustomError.BadRequestError('The selected time is outside the outlet’s operating hours.');
+  }
+
+  // Proceed to update booking with the new date
+  booking.date = selectedDate;
+  await booking.save();
+
+  sendResponse(res, {
+    statusCode: 200,
+    status: 'success',
+    message: 'Booking rescheduled successfully!',
+  });
+};
+
 export default {
   createBooking,
   getBookingsByUserId,
   getBookingsByOutletId,
   getBookingsByServiceId,
   retriveUpcommingBookingsByUserId,
+  bookingRescheduleById,
 };
