@@ -105,6 +105,17 @@ const getSpecificUser = async (req: Request, res: Response) => {
     data: user,
   });
 };
+// service for get specific user by id
+const getAllUser = async (req: Request, res: Response) => {
+  const users = await userServices.getAllUser();
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    status: 'success',
+    message: 'User retrive successfull',
+    data: users,
+  });
+};
 
 // controller for delete specific user
 const deleteSpecificUser = async (req: Request, res: Response) => {
@@ -171,6 +182,7 @@ const changeUserProfileImage = async (req: Request, res: Response) => {
 export default {
   createUser,
   getSpecificUser,
+  getAllUser,
   deleteSpecificUser,
   updateSpecificUser,
   changeUserProfileImage,

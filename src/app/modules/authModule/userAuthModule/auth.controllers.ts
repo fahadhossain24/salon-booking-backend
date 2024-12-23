@@ -22,6 +22,10 @@ const userLogin = async (req: Request, res: Response) => {
   if (!user && !outlet) throw new CustomError.BadRequestError('Invalid email or password!');
 
   if (user) {
+    // check user disablility
+    if (user.status === 'disabled') {
+      throw new CustomError.BadRequestError('Your current account is disabled!');
+    }
     if (isSocial) {
       // if (user.fcmToken !== fcmToken) {
       //   throw new CustomError.BadRequestError('Invalid creadentials')

@@ -46,15 +46,30 @@ const serviceSchema = new mongoose.Schema<IService>(
     image: String,
     consumeCount: {
       type: Number,
-      default: 0
+      default: 0,
     },
     isHomeServiceAvailable: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   {
     timestamps: true,
+  },
+);
+
+serviceSchema.index(
+  {
+    name: 'text',
+    discount: 'text',
+    consumeCount: 'text',
+  },
+  {
+    weights: {
+      name: 5,
+      discount: 4,
+      consumeCount: 4,
+    },
   },
 );
 

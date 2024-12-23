@@ -37,7 +37,7 @@ const getAllServiceCategory = async (req: Request, res: Response) => {
   });
 };
 
-// controller for get all service category
+// controller for get specific service category
 const getSpecificServiceCategory = async (req: Request, res: Response) => {
   const { id } = req.params;
   if (!id) {

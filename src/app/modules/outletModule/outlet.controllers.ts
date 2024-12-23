@@ -104,6 +104,53 @@ const getOutletsByServiceCategory = async (req: Request, res: Response) => {
   });
 };
 
+// controller for get all outlets
+const getAllOutlets = async (req: Request, res: Response) => {
+  const { type, query } = req.query;
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 8;
+
+  const skip = (page - 1) * limit;
+  const outlets = await outletServices.getAllOutlets(type as string, query as string, skip, limit);
+
+  const enrichedOutlets = await Promise.all(
+    outlets.map(async (outlet) => {
+      const schedule = await Schedule.findOne({ outlet: outlet._id });
+      const feedbacksOfOutlet = await Feedback.find({ 'outlet.outletId': outlet._id });
+      let topRating = 0;
+      feedbacksOfOutlet.forEach((feedback) => {
+        if (feedback.rating > topRating) {
+          topRating = feedback.rating;
+        }
+        return topRating;
+      });
+      let enrichedOutlet = { ...outlet.toObject(), rating: topRating || 0 }; // Convert to plain object
+      if (schedule) {
+        const days = `${schedule.daySlot[0].dayName} - ${schedule.daySlot[schedule.daySlot.length - 1].dayName}`;
+        const times = `${schedule.timeSlot[0]} - ${schedule.timeSlot[schedule.timeSlot.length - 1]}`;
+        enrichedOutlet.scheduleStamp = { days, times }; // Add scheduleStamp
+      }
+      return enrichedOutlet; // Return the enriched outlet
+    }),
+  );
+
+  const totalOutlets = enrichedOutlets.length || 0;
+  const totalPages = Math.ceil(totalOutlets / limit);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    status: 'success',
+    message: 'Outlets retrive successfull!',
+    meta: {
+      totalData: totalOutlets,
+      totalPage: totalPages,
+      currentPage: page,
+      limit: limit,
+    },
+    data: enrichedOutlets,
+  });
+};
+
 // controller for get all recommended outlets by main service category
 const getRecommendedOutletsByServiceCategory = async (req: Request, res: Response) => {
   const { serviceCategoryId } = req.params;
@@ -286,6 +333,7 @@ const deleteSpecificOutlet = async (req: Request, res: Response) => {
 export default {
   createOutlet,
   getOutletsByServiceCategory,
+  getAllOutlets,
   getRecommendedOutletsByServiceCategory,
   updateSpecificOutlet,
   changeOutletProfileImage,

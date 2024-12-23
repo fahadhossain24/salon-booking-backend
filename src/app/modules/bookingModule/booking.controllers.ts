@@ -253,6 +253,32 @@ const bookingRescheduleById = async (req: Request, res: Response) => {
   });
 };
 
+// controller for retrive all bookings
+const retriveAllBookings = async (req: Request, res: Response) => {
+  const { query } = req.query;
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 8;
+
+  const skip = (page - 1) * limit;
+  const bookings = await bookingServices.getBookings(query as string, skip, limit);
+
+  const totalBookings = bookings.length || 0;
+  const totalPages = Math.ceil(totalBookings / limit);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    status: 'success',
+    message: 'Bookings retrive successfull!',
+    meta: {
+      totalData: totalBookings,
+      totalPage: totalPages,
+      currentPage: page,
+      limit: limit,
+    },
+    data: bookings,
+  });
+}
+
 export default {
   createBooking,
   getBookingsByUserId,
@@ -261,4 +287,5 @@ export default {
   retriveUpcommingBookingsByUserId,
   retriveUpcommingBookingsByOutletId,
   bookingRescheduleById,
+  retriveAllBookings
 };

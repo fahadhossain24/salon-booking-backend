@@ -11,6 +11,11 @@ outletRouter.get(
   outletControllers.getOutletsByServiceCategory,
 );
 outletRouter.get(
+  '/retrive/search',
+  authorization('outlet', 'super-admin', 'admin', 'user'),
+  outletControllers.getAllOutlets,
+);
+outletRouter.get(
   '/retrive/recommended/category/:serviceCategoryId/search',
   authorization('outlet', 'super-admin', 'admin', 'user'),
   outletControllers.getRecommendedOutletsByServiceCategory,

@@ -33,6 +33,15 @@ const getPopularServices = async (documentCount: number = 0) => {
   return await Service.find().sort('-consumeCount').limit(documentCount);
 };
 
+// service for retrive popular service
+const getAllServices = async (query: string, skip: number, limit: number) => {
+  const filter: any = {}
+  if (query) {
+    filter.$text = { $search: query}; 
+  }
+  return await Service.find(filter).skip(skip).limit(limit)
+};
+
 export default {
   createService,
   getServicesByOutlet,
@@ -40,4 +49,5 @@ export default {
   deleteSpecificService,
   getDiscountedServices,
   getPopularServices,
+  getAllServices,
 };

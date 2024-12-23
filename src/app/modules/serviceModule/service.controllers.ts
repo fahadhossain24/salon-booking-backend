@@ -134,6 +134,32 @@ const getPopularServices = async (req: Request, res: Response) => {
   });
 };
 
+// controller for retrive all services
+const retriveAllServices = async (req: Request, res: Response) => {
+  const { query } = req.query;
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 8;
+
+  const skip = (page - 1) * limit;
+  const services = await serviceServices.getAllServices(query as string, skip, limit);
+
+  const totalServices = services.length || 0;
+  const totalPages = Math.ceil(totalServices / limit);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    status: 'success',
+    message: 'Services retrive successfull!',
+    meta: {
+      totalData: totalServices,
+      totalPage: totalPages,
+      currentPage: page,
+      limit: limit,
+    },
+    data: services,
+  });
+}
+
 export default {
   createService,
   getServiceByOutletId,
@@ -141,4 +167,5 @@ export default {
   deleteServiceByServiceId,
   getDiscountedServices,
   getPopularServices,
+  retriveAllServices
 };

@@ -62,12 +62,39 @@ const bookingSchema = new mongoose.Schema<IBooking>(
       enum: ['upcomming', 'past', 'completed', 'canceled'],
       default: 'upcomming',
     },
-    homeService: Boolean
+    homeService: Boolean,
   },
   {
     timestamps: true,
   },
 );
+
+bookingSchema.index(
+  {
+    'user.name': 'text',
+    'user.address': 'text',
+    'outlet.name': 'text',
+    'outlet.address': 'text',
+    'paymentStatus': 'text',
+    'paymentSource.type': 'text',
+    'paymentType': 'text',
+    'bookingStatus': 'text',
+  },
+  {
+    weights: {
+      'user.name': 5,
+      'user.address': 4,
+      'outlet.name': 5,
+      'outlet.address': 4,
+      'paymentStatus': 3,
+      'paymentSource.type': 4,
+      'paymentType': 3,
+      'bookingStatus': 2,
+    },
+    name: 'BookingTextIndex',
+  }
+);
+
 
 const Booking = mongoose.model<IBooking>('booking', bookingSchema);
 export default Booking;

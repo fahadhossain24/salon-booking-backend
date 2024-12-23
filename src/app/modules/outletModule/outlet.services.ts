@@ -17,13 +17,30 @@ const getSpecificOutlet = async (id: string): Promise<IOutlet> => {
 //   return await Outlet.find({ categoryId: id }).populate('categoryId').skip(skip).limit(limit);
 // };
 const getOutletsByServiceCategory = async (id: string, query: string, skip: number, limit: number) => {
-  let filter: any = { categoryId: id };
+  let filter: any = { categoryId: id, status: 'active' };
 
   // If a search query is provided, perform a text search or regex search
   if (query) {
     filter.$text = { $search: query}; // Assuming the `Outlet` model has a text index on relevant fields
   }
 
+  return await Outlet.find(filter).populate('categoryId').skip(skip).limit(limit);
+};
+
+// service for get all outlets
+const getAllOutlets = async (type: string, query: string, skip: number, limit: number) => {
+  let filter: any = { };
+
+  if(type){
+    filter.type = type;
+  }
+
+  // If a search query is provided, perform a text search or regex search
+  if (query) {
+    filter.$text = { $search: query}; // Assuming the `Outlet` model has a text index on relevant fields
+  }
+
+console.log(filter)
   return await Outlet.find(filter).populate('categoryId').skip(skip).limit(limit);
 };
 
@@ -69,6 +86,7 @@ export default {
   createOutlet,
   getSpecificOutlet,
   getOutletsByServiceCategory,
+  getAllOutlets,
   getRecommendedOutletsByServiceCategory,
   updateSpecificOutlet,
   deleteSpecificOutlet,

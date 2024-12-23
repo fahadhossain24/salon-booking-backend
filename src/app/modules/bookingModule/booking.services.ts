@@ -11,6 +11,15 @@ const getBookingsByUserId = async (userId: string, skip: number, limit: number) 
   return await Booking.find({ 'user.userId': userId }).sort('-createdAt').skip(skip).limit(limit);
 };
 
+// service for retrive all bookings
+const getBookings = async (query: string, skip: number, limit: number) => {
+  const filter: any = {};
+  if (query) {
+    filter.$text = { $search: query };
+  }
+  return await Booking.find(filter).sort('-createdAt').skip(skip).limit(limit);
+};
+
 // service for retrive all bookings by outletId
 const getbookingsByOutletId = async (outletId: string, skip: number, limit: number) => {
   console.log(outletId);
@@ -63,6 +72,7 @@ export default {
   createBooking,
   getBookingsByServiceId,
   getBookingsByUserId,
+  getBookings,
   getbookingsByOutletId,
   getUpcommingBookingsByUserId,
   getUpcommingBookingsByOutletId,

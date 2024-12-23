@@ -13,6 +13,11 @@ const getSpecificUser = async (id: string): Promise<IUser> => {
 };
 
 // service for get specific user
+const getAllUser = async (): Promise<IUser[]> => {
+  return await User.find().select('-password');
+};
+
+// service for get specific user
 const getSpecificUserByEmail = async (email: string): Promise<IUser> => {
   return await User.findOne({ email }).select('-password');
 };
@@ -34,5 +39,6 @@ export default {
   getSpecificUser,
   getSpecificUserByEmail,
   updateSpecificUser,
-  deleteSpecificUser
+  deleteSpecificUser,
+  getAllUser
 };
