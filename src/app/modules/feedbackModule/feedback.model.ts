@@ -35,6 +35,10 @@ const feedbackSchema = new mongoose.Schema<IFeedback>(
       default: 0,
     },
     comment: String,
+    booking: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "booking"
+    }
   },
   {
     timestamps: true,

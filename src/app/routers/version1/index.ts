@@ -14,6 +14,7 @@ import scheduleRouter from '../../modules/scheduleModule/schedule.routes';
 import bookingRouter from '../../modules/bookingModule/booking.routes';
 import feedbackRouter from '../../modules/feedbackModule/feedback.routes';
 import wishlistRouter from '../../modules/wishlistModule/wishlist.routes';
+import earningRouter from '../../modules/earningModule/earning.routes';
 
 const routers = express.Router();
 
@@ -32,5 +33,6 @@ routers.use('/schedule', scheduleRouter)
 routers.use('/booking', bookingRouter)
 routers.use('/feedback', feedbackRouter)
 routers.use('/wishlist', wishlistRouter)
+routers.use('/earning', earningRouter)
 
 export default routers;

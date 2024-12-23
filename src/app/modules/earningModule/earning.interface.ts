@@ -1,7 +1,7 @@
 import { Document, Types } from 'mongoose';
 
 export interface IEarning extends Document {
-  earning: {
+  earnings: {
     amount: number;
     currency: string;
   }[];
@@ -10,4 +10,8 @@ export interface IEarning extends Document {
     name: string;
     type: string;
   };
+  totalEarning: {
+    amount: number,
+    currency: string
+  }
 }

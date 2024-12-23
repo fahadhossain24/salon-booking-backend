@@ -19,5 +19,6 @@ outletRouter.patch('/update/:id', authorization('outlet', 'super-admin', 'admin'
 outletRouter.patch('/change/profile/:id', authorization('outlet', 'super-admin', 'admin'), outletControllers.changeOutletProfileImage);
 outletRouter.patch('/change/cover/:id', authorization('outlet', 'super-admin', 'admin'), outletControllers.changeOutletCoverImage);
 outletRouter.get('/retrive/:id', authorization('outlet', 'super-admin', 'admin'), outletControllers.getOutletByOutletId);
+outletRouter.delete('/delete/:id', authorization('outlet', 'super-admin', 'admin'), outletControllers.deleteSpecificOutlet);
 
 export default outletRouter;

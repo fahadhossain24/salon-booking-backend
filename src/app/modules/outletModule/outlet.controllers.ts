@@ -132,7 +132,7 @@ const getRecommendedOutletsByServiceCategory = async (req: Request, res: Respons
         }
         return topRating;
       });
-      let enrichedOutlet = { ...outlet.toObject(), rating: topRating || 0  }; // Convert to plain object
+      let enrichedOutlet = { ...outlet.toObject(), rating: topRating || 0 }; // Convert to plain object
       if (schedule) {
         const days = `${schedule.daySlot[0].dayName} - ${schedule.daySlot[schedule.daySlot.length - 1].dayName}`;
         const times = `${schedule.timeSlot[0]} - ${schedule.timeSlot[schedule.timeSlot.length - 1]}`;
@@ -258,6 +258,21 @@ const getOutletByOutletId = async (req: Request, res: Response) => {
   });
 };
 
+// controller for delete specific delete
+const deleteSpecificOutlet = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const outlet = await outletServices.deleteSpecificOutlet(id);
+  if (!outlet.deletedCount) {
+    throw new CustomError.BadRequestError('Failed to delete outlet!');
+  }
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    status: 'success',
+    message: 'Outlet delete successfull',
+  });
+};
+
 // // controller for search outlet inside service category
 // const searchOutletInsideServiceCategory = async(req: Request, res: Response) => {
 //   const {id} = req.params;
@@ -276,4 +291,5 @@ export default {
   changeOutletProfileImage,
   changeOutletCoverImage,
   getOutletByOutletId,
+  deleteSpecificOutlet,
 };

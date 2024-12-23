@@ -4,10 +4,15 @@ import CustomError from '../../errors';
 import sendResponse from '../../../shared/sendResponse';
 import { StatusCodes } from 'http-status-codes';
 import mongoose from 'mongoose';
+import Service from '../serviceModule/service.model';
+import Booking from '../bookingModule/booking.model';
+import Earning from '../earningModule/earning.model';
 
 // controller for create or update new feedback
 const createOrUpdateFeedback = async (req: Request, res: Response) => {
   const feedbackData = req.body;
+
+  const booking = await Booking.findOne({ _id: feedbackData.booking });
 
   // Ensure outletId is a valid ObjectId
   feedbackData.outlet.outletId = new mongoose.Types.ObjectId(feedbackData.outlet.outletId);
@@ -28,6 +33,42 @@ const createOrUpdateFeedback = async (req: Request, res: Response) => {
     feedback = await feedbackServices.createFeedback(feedbackData);
   }
 
+  if (booking && existFeedback?.booking.toString() !== feedbackData.booking) {
+    booking.bookingStatus = 'completed';
+    const earningOfOutlet = await Earning.findOne({ 'outlet.outletId': feedbackData.outlet.outletId });
+
+    if (earningOfOutlet) {
+      earningOfOutlet.earnings.push({
+        amount: booking.service.price.amount,
+        currency: booking.service.price.currency,
+        createdAt: new Date()
+      });
+      earningOfOutlet.totalEarning.amount = earningOfOutlet.totalEarning.amount + booking.service.price.amount;
+      earningOfOutlet.totalEarning.currency = booking.service.price.currency;
+      await earningOfOutlet.save();
+    } else {
+      const payload = {
+        earnings: [
+          {
+            amount: booking.service.price.amount,
+            currency: booking.service.price.currency,
+            createdAt: new Date()
+          },
+        ],
+        outlet: {
+          outletId: feedbackData.outlet.outletId,
+          name: feedbackData.outlet.name,
+          type: feedbackData.outlet.type
+        },
+        totalEarning: {
+          amount: booking.service.price.amount,
+          currency: booking.service.price.currency,
+        },
+      };
+      await Earning.create(payload);
+    }
+  }
+
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     status: 'success',
@@ -36,6 +77,20 @@ const createOrUpdateFeedback = async (req: Request, res: Response) => {
   });
 };
 
+// controller for get feedbacks by outletId
+const getFeedbacksByOutletIds = async (req: Request, res: Response) => {
+  const { outletId } = req.params;
+  const feedbacks = await feedbackServices.getFeedbacksByOutletId(outletId);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    status: 'success',
+    message: `Feedbacks retrive successful!`,
+    data: feedbacks,
+  });
+};
+
 export default {
   createOrUpdateFeedback,
+  getFeedbacksByOutletIds,
 };
